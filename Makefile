@@ -15,8 +15,10 @@ $(MSA_BIN): $(MSA_SRC) $(LEMON_INSTALL_DIR)
 	$(CXX) -O3 "$(MSA_SRC)" -o "$(MSA_BIN)" -I "$(LEMON_INSTALL_DIR)/include"
 
 $(LEMON_INSTALL_DIR): $(LEMON_DIR)
-	cmake -DCMAKE_INSTALL_PREFIX="$(LEMON_INSTALL_DIR)" -S "$(LEMON_DIR)" -B "$(LEMON_BUILD_DIR)"
-	cmake --build "$(LEMON_BUILD_DIR)" -- install
+	mkdir -p "$(LEMON_BUILD_DIR)"
+	cd "$(LEMON_BUILD_DIR)" && \
+		cmake -DCMAKE_INSTALL_PREFIX="$(CURDIR)/$(LEMON_INSTALL_DIR)" "$(CURDIR)/$(LEMON_DIR)" && \
+		cmake --build . -- install
 
 $(LEMON_DIR):
 	wget -O- "http://lemon.cs.elte.hu/pub/sources/lemon-1.3.1.tar.gz" | tar xz
@@ -29,7 +31,7 @@ $(CONCORDE_BIN):
 	chmod u+x "$(CONCORDE_BIN)"
 
 python_deps:
-	@command -v poetry || (echo "Poetry not found. Please install Poetry by executing `python3 -m pip install poetry --user`."; exit 1)
+	@command -v poetry || (echo "Poetry not found. Please install Poetry by executing 'python3 -m pip install poetry --user', then run Make again."; exit 1)
 	poetry install
 
 $(TSPLIB_DIR):
@@ -48,6 +50,6 @@ clean:
 	rm -rf "$(LEMON_DIR)"
 	rm -f "$(CONCORDE_BIN)"
 	rm -f "$(MSA_BIN)"
-	rm -rf "$(TSPLIB_DIR)
+	rm -rf "$(TSPLIB_DIR)"
 
 .PHONY: all python_deps clean unzip_tsplib
