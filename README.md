@@ -1,4 +1,5 @@
 # From Symmetry to Asymmetry: Generalizing TSP Approximations by Parametrization
+[![Build Status](https://travis-ci.com/Blaidd-Drwg/atsp-approximation.svg?branch=master)](https://travis-ci.com/Blaidd-Drwg/atsp-approximation)
 
 This repository provides a reference implementation of the algorithms presented in the paper ['From Symmetry to Asymmetry: Generalizing TSP Approximations by Parametrization'](https://arxiv.org/abs/1911.02453).
 
@@ -6,6 +7,10 @@ This repository provides a reference implementation of the algorithms presented 
 Python >= 3.6 and Java >= 8 are required to run the program. The remaining dependencies can either be downloaded and built automatically by Make (Linux only), or manually. The build process requires a C++ compiler, CMake and Make.
 
 ### Makefile
+Install Poetry, which will manage the Python dependencies:
+```
+$ python3 -m pip install poetry --user
+```
 Use Make to automatically download and build all dependencies:
 ```
 $ make all

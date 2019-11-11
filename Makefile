@@ -9,7 +9,6 @@ TSPLIB_DIR=instances/tsplib
 TSPLIB_FILES=$(patsubst %.gz,%,$(wildcard $(TSPLIB_DIR)/*.gz))
 
 all: $(MSA_BIN) $(CONCORDE_BIN) python_deps $(TSPLIB_DIR)
-	@echo "TODO support other OSes"
 
 $(MSA_BIN): $(MSA_SRC) $(LEMON_INSTALL_DIR)
 	$(CXX) -O3 "$(MSA_SRC)" -o "$(MSA_BIN)" -I "$(LEMON_INSTALL_DIR)/include"
@@ -45,6 +44,9 @@ unzip_tsplib: $(TSPLIB_FILES)
 $(TSPLIB_DIR)/%:
 	gunzip $@.gz
 
+test:
+	poetry run python3 src/main.py -t instances/tsplib/ftv33.atsp --multibeta
+	poetry run python3 src/main.py -c instances/tsplib/ftv33.atsp --multibeta
 
 clean:
 	rm -rf "$(LEMON_DIR)"
@@ -52,4 +54,4 @@ clean:
 	rm -f "$(MSA_BIN)"
 	rm -rf "$(TSPLIB_DIR)"
 
-.PHONY: all python_deps clean unzip_tsplib
+.PHONY: all python_deps unzip_tsplib test clean

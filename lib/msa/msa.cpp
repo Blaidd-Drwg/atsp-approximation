@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    MinCostArborescence<FullDigraph, FullDigraph::ArcMap<int>> algo(g, costs);
+    MinCostArborescence<FullDigraph, FullDigraph::ArcMap<int> > algo(g, costs);
     algo.run(g(startNode));
 
     std::ofstream output;
