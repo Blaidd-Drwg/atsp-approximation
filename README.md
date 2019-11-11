@@ -1,6 +1,6 @@
 # From Symmetry to Asymmetry: Generalizing TSP Approximations by Parametrization
 
-This repository provides a reference implementation of the algorithms presented in the paper ['From Symmetry to Asymmetry: Generalizing TSP Approximations by Parametrization'](TODO arxiv link).
+This repository provides a reference implementation of the algorithms presented in the paper ['From Symmetry to Asymmetry: Generalizing TSP Approximations by Parametrization'](https://arxiv.org/abs/1911.02453).
 
 ## Dependencies
 Python >= 3.6 and Java >= 8 are required to run the program. The remaining dependencies can either be downloaded and built automatically by Make (Linux only), or manually. The build process requires a C++ compiler, CMake and Make.
