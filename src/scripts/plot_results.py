@@ -18,8 +18,8 @@ def main():
             ax2 = ax1
         else:
             _, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
-        plot_experiment(os.path.join(directory, f'{instance}.atsp.e'), ax1, 'o', 'Generalized Christofides algorithm')
-        plot_experiment(os.path.join(directory, f'{instance}.atsp.a'), ax2, 's', 'Generalized tree-doubling algorithm')
+        plot_experiment(os.path.join(directory, f'{instance}.atsp.c'), ax1, 'o', 'Generalized Christofides algorithm')
+        plot_experiment(os.path.join(directory, f'{instance}.atsp.t'), ax2, 's', 'Generalized tree-doubling algorithm')
         adjust_ax_limits(ax1, ax2)
         plt.title(instance)
         plt.tight_layout()

@@ -62,11 +62,11 @@ def main():
     for instance in instances:
         substrings += [f'{{{instance}}}']
 
-        a_substrings = []
-        e_substrings = []
-        a_data, a_zero = algo_data(os.path.join(directory, f'{instance}.atsp.a'))
-        e_data, e_zero = algo_data(os.path.join(directory, f'{instance}.atsp.e'))
-        for a, e in zip(a_data, e_data):
+        t_substrings = []
+        c_substrings = []
+        t_data, t_zero = algo_data(os.path.join(directory, f'{instance}.atsp.t'))
+        c_data, c_zero = algo_data(os.path.join(directory, f'{instance}.atsp.c'))
+        for a, e in zip(t_data, c_data):
             if a['cost'] < e['cost']:
                 a['cost'] = f'\\textbf{{{a["cost"]:.2f}}}'
                 e['cost'] = f'{e["cost"]:.2f}'
@@ -82,23 +82,23 @@ def main():
             elif e['k'] < a['k']:
                 e['k'] = f'\\textbf{{{e["k"]}}}'
 
-            a_substrings += [f' & {a["k"]}/{a["cost"]}']
-            e_substrings += [f' & {e["k"]}/{e["cost"]}']
+            t_substrings += [f' & {a["k"]}/{a["cost"]}']
+            c_substrings += [f' & {e["k"]}/{e["cost"]}']
 
-        if a_zero['cost'] < e_zero['cost']:
-            a_zero['cost'] = f'\\textbf{{{a_zero["cost"]:.2f}}}'
-            e_zero['cost'] = f'{e_zero["cost"]:.2f}'
-        elif e_zero['cost'] < a_zero['cost']:
-            e_zero['cost'] = f'\\textbf{{{e_zero["cost"]:.2f}}}'
-            a_zero['cost'] = f'{a_zero["cost"]:.2f}'
+        if t_zero['cost'] < c_zero['cost']:
+            t_zero['cost'] = f'\\textbf{{{t_zero["cost"]:.2f}}}'
+            c_zero['cost'] = f'{c_zero["cost"]:.2f}'
+        elif c_zero['cost'] < t_zero['cost']:
+            c_zero['cost'] = f'\\textbf{{{c_zero["cost"]:.2f}}}'
+            t_zero['cost'] = f'{t_zero["cost"]:.2f}'
         else:
-            a_zero['cost'] = f'{a_zero["cost"]:.2f}'
-            e_zero['cost'] = f'{e_zero["cost"]:.2f}'
+            t_zero['cost'] = f'{t_zero["cost"]:.2f}'
+            c_zero['cost'] = f'{c_zero["cost"]:.2f}'
 
-        substrings += e_substrings
-        substrings += [f' & {e_zero["cost"]}']
-        substrings += a_substrings
-        substrings += [f' & {a_zero["cost"]}']
+        substrings += c_substrings
+        substrings += [f' & {c_zero["cost"]}']
+        substrings += t_substrings
+        substrings += [f' & {t_zero["cost"]}']
         substrings += ['\n']
         substrings += [r' \\']
         substrings += ['\n']

@@ -105,7 +105,7 @@ def main():
 
     if len(sys.argv) == 1:
         argparser.print_help()
-        exit(1)
+        exit()
 
     args = argparser.parse_args()
 
