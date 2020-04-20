@@ -45,7 +45,7 @@ def run_concorde(tsp_file, out_file):
     # Concorde has tons of weird error messages, but it usually still works.
     # To reduce clutter, redirect stderr to /dev/null
     concorde_path = pathlib.Path(__file__).parent.parent.joinpath('vendor', 'concorde')
-    subprocess.run([concorde_path, '-x', '-o', out_file, tsp_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.run([concorde_path, '-x', '-s0', '-o', out_file, tsp_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def parse(filename):
