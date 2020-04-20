@@ -2,14 +2,13 @@ from csv import DictReader
 import sys
 import os
 
-# Script to generate a Latex table of the multibeta results, TODO adapt to changed output format
+# Script to generate a Latex table of the multibeta results
 
 step_size = 2
 columns = 4
 table_x_sep = '0.64mm'
 table_y_stretch = '1.1'
 
-fieldnames = ['beta', 'k', 'cost']
 instances = ['ft53', 'ft70', 'ftv170', 'ftv33', 'ftv35', 'ftv38', 'ftv44', 'ftv47', 'ftv55',
              'ftv64', 'ftv70', 'kro124p', 'p43', 'rbg323', 'rbg358', 'rbg403', 'rbg443', 'ry48p']
 data_points = columns * step_size
@@ -31,6 +30,11 @@ tab_end = r'''
 
 
 def main():
+    if len(sys.argv) == 1:
+        print("Usage: python3 table.py resultdir")
+        print("This script creates a Latex table displaying the results of multibeta experiments. The input filenames are hardcoded as '{resultdir}/{instance}.atsp.{c/t}'. The table code is printed to stdout.")
+        exit()
+
     directory = sys.argv[1]
 
     substrings = []
@@ -67,38 +71,38 @@ def main():
         t_data, t_zero = algo_data(os.path.join(directory, f'{instance}.atsp.t'))
         c_data, c_zero = algo_data(os.path.join(directory, f'{instance}.atsp.c'))
         for a, e in zip(t_data, c_data):
-            if a['cost'] < e['cost']:
-                a['cost'] = f'\\textbf{{{a["cost"]:.2f}}}'
-                e['cost'] = f'{e["cost"]:.2f}'
-            elif e['cost'] < a['cost']:
-                e['cost'] = f'\\textbf{{{e["cost"]:.2f}}}'
-                a['cost'] = f'{a["cost"]:.2f}'
+            if a['tour_cost'] < e['tour_cost']:
+                a['tour_cost'] = f'\\textbf{{{a["tour_cost"]:.2f}}}'
+                e['tour_cost'] = f'{e["tour_cost"]:.2f}'
+            elif e['tour_cost'] < a['tour_cost']:
+                e['tour_cost'] = f'\\textbf{{{e["tour_cost"]:.2f}}}'
+                a['tour_cost'] = f'{a["tour_cost"]:.2f}'
             else:
-                a['cost'] = f'{a["cost"]:.2f}'
-                e['cost'] = f'{e["cost"]:.2f}'
+                a['tour_cost'] = f'{a["tour_cost"]:.2f}'
+                e['tour_cost'] = f'{e["tour_cost"]:.2f}'
 
-            if a['k'] < e['k']:
-                a['k'] = f'\\textbf{{{a["k"]}}}'
-            elif e['k'] < a['k']:
-                e['k'] = f'\\textbf{{{e["k"]}}}'
+            if a['kernel_size'] < e['kernel_size']:
+                a['kernel_size'] = f'\\textbf{{{a["kernel_size"]}}}'
+            elif e['kernel_size'] < a['kernel_size']:
+                e['kernel_size'] = f'\\textbf{{{e["kernel_size"]}}}'
 
-            t_substrings += [f' & {a["k"]}/{a["cost"]}']
-            c_substrings += [f' & {e["k"]}/{e["cost"]}']
+            t_substrings += [f' & {a["kernel_size"]}/{a["tour_cost"]}']
+            c_substrings += [f' & {e["kernel_size"]}/{e["tour_cost"]}']
 
-        if t_zero['cost'] < c_zero['cost']:
-            t_zero['cost'] = f'\\textbf{{{t_zero["cost"]:.2f}}}'
-            c_zero['cost'] = f'{c_zero["cost"]:.2f}'
-        elif c_zero['cost'] < t_zero['cost']:
-            c_zero['cost'] = f'\\textbf{{{c_zero["cost"]:.2f}}}'
-            t_zero['cost'] = f'{t_zero["cost"]:.2f}'
+        if t_zero['tour_cost'] < c_zero['tour_cost']:
+            t_zero['tour_cost'] = f'\\textbf{{{t_zero["tour_cost"]:.2f}}}'
+            c_zero['tour_cost'] = f'{c_zero["tour_cost"]:.2f}'
+        elif c_zero['tour_cost'] < t_zero['tour_cost']:
+            c_zero['tour_cost'] = f'\\textbf{{{c_zero["tour_cost"]:.2f}}}'
+            t_zero['tour_cost'] = f'{t_zero["tour_cost"]:.2f}'
         else:
-            t_zero['cost'] = f'{t_zero["cost"]:.2f}'
-            c_zero['cost'] = f'{c_zero["cost"]:.2f}'
+            t_zero['tour_cost'] = f'{t_zero["tour_cost"]:.2f}'
+            c_zero['tour_cost'] = f'{c_zero["tour_cost"]:.2f}'
 
         substrings += c_substrings
-        substrings += [f' & {c_zero["cost"]}']
+        substrings += [f' & {c_zero["tour_cost"]}']
         substrings += t_substrings
-        substrings += [f' & {t_zero["cost"]}']
+        substrings += [f' & {t_zero["tour_cost"]}']
         substrings += ['\n']
         substrings += [r' \\']
         substrings += ['\n']
@@ -115,7 +119,7 @@ def main():
 
 def algo_data(algo_file):
     with open(algo_file) as f:
-        all_data = list(DictReader(f, fieldnames=fieldnames, delimiter=' '))[:-1]
+        all_data = list(DictReader(f, delimiter=',', skipinitialspace=True))[:-1]
     opt = all_data[0]
     zero = all_data[-1]
 
@@ -125,9 +129,9 @@ def algo_data(algo_file):
     all_data = all_data[::step_size]
 
     for data in all_data:
-        data['cost'] = round(int(data["cost"]) / int(opt["cost"]), 2)
-        data['k'] = int(data["k"])
-    zero['cost'] = round(int(zero["cost"]) / int(opt["cost"]), 2)
+        data['tour_cost'] = round(int(data["tour_cost"]) / int(opt["tour_cost"]), 2)
+        data['kernel_size'] = int(data["kernel_size"])
+    zero['tour_cost'] = round(int(zero["tour_cost"]) / int(opt["tour_cost"]), 2)
     return all_data, zero
 
 
