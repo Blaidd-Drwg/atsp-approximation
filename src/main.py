@@ -78,12 +78,15 @@ def format_output(solution, beta, output_tour):
 
 
 def main():
+    # If you change the arguments or the help text, remember to update the README
     argparser = argparse.ArgumentParser('', formatter_class=argparse.RawTextHelpFormatter)
     argparser.add_argument('graph',
-                           help='A file describing a graph. Accepted formats are:\n'
-                           '- TSPLIB files with EDGE_WEIGHT_FORMAT=FULL_MATRIX\n'
-                           '- weight matrices in CSV format\n'
-                           "- the graph's dimension followed by whitespace-separated edge weights.")
+                           help='A file describing a graph. Multiple formats are supported, identified by the\n'
+                           'file name extension:\n'
+                           '  .atsp: TSPLIB files with EDGE_WEIGHT_FORMAT=FULL_MATRIX\n'
+                           '  .csv: weight matrices in CSV format\n'
+                           '  .tsv: weight matrices in TSV format\n'
+                           "  .txt: the graph's dimension followed by whitespace-separated edge weights.")
     argparser.add_argument('--tour', action='store_true', dest='output_tour',
                            help='Output the computed tour as a space-separated node list')
 

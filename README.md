@@ -30,4 +30,27 @@ Enter the virtual environment and execute the main script:
 $ poetry shell
 $ python3 src/main.py
 ```
-This will print a summary of the command line options.
+The script supports the following arguments:
+```
+usage: [-h] [--tour] (-t | -c) [-b BETA | --multibeta] graph
+
+positional arguments:
+  graph                 A file describing a graph. Multiple formats are supported, identified by the
+                        file name extension:
+                          .atsp: TSPLIB files with EDGE_WEIGHT_FORMAT=FULL_MATRIX
+                          .csv: weight matrices in CSV format
+                          .tsv: weight matrices in TSV format
+                          .txt: the graph's dimension followed by whitespace-separated edge weights.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --tour                Output the computed tour as a space-separated node list
+  -t, --treedoubling    Use the generalized tree doubling algorithm
+  -c, --christofides    Use the generalized Christofides algorithm
+  -b BETA, --beta BETA  Asymmetry factor above which edges are treated as asymmetric (default: 1).
+                        Choosing beta = 0 will compute an exact solution.
+  --multibeta           Execute the script multiple times with different values for beta.
+                        First, compute an exact solution as a reference point. After that, start
+                        by treating every asymmetric edge as asymmetric (beta = 1), then halve
+                        the number of asymmetric edges each time until no asymmetric edges remain.
+```
