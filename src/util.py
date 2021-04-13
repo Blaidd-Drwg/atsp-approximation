@@ -4,6 +4,7 @@ import numpy as np
 
 def to_graph(matrix, using=nx.DiGraph):
     copy = np.copy(matrix)
+    # networkx interprets weight 0 as no edge, so temporarily replace 0 with -1
     copy[copy == 0] = -1
     g = nx.from_numpy_matrix(copy, create_using=using())
     for u, v, data in g.edges(data=True):

@@ -33,6 +33,7 @@ def concorde_asym(g):
         return held_karp(g)
 
     tour = concorde_sym(g_sym)['tour']
+    # remove pseudonodes from the Jonker-Volgenant transformation
     tour = [list(g.nodes)[i] for i in tour if i < len(g)]
     rev_tour = tour[::-1]
     return min(
