@@ -45,8 +45,7 @@ $(TSPLIB_DIR)/%:
 	gunzip $@.gz
 
 test:
-	poetry run python3 src/main.py -t instances/tsplib/ftv33.atsp --multibeta
-	poetry run python3 src/main.py -c instances/tsplib/ftv33.atsp --multibeta
+	./test.sh
 
 clean:
 	rm -rf "$(LEMON_DIR)"
