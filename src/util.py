@@ -1,3 +1,4 @@
+import sys
 import networkx as nx
 import numpy as np
 
@@ -33,3 +34,7 @@ def metric_shortcut(tour):
 
 def rotate(l, n):
     return l[n:] + l[:n]
+
+
+def err_print(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)

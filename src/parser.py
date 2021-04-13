@@ -1,3 +1,4 @@
+from util import err_print
 import csv
 import sys
 import math
@@ -26,7 +27,7 @@ def parse(filename, file_format=None):
         elif filename.endswith('.txt'):
             file_format = FileFormat.PLAIN
         else:
-            print("File name extension not recognized, use the --help flag to see the supported formats")
+            err_print("Error: File name extension not recognized, use the --help flag to see the supported formats")
             exit(1)
 
     if file_format == FileFormat.TSPLIB:
@@ -45,8 +46,8 @@ def parse(filename, file_format=None):
     max_decimal_place_count = max(decimal_place_count(weight_string) for weight_string in flattened_weight_matrix)
     scaling_factor = 10**max_decimal_place_count
     if scaling_factor > 1:
-        print(f'Warning: Concorde does not support floating point weights, scaling all weights by a factor of {scaling_factor}.')
-        print(f'To get the correct tour cost, scale the output tour cost back by dividing by {scaling_factor}')
+        err_print(f'Warning: Concorde does not support floating point weights, scaling all weights by a factor of {scaling_factor}.')
+        err_print(f'To get the correct tour cost, scale the output tour cost back by dividing by {scaling_factor}')
     flattened_weight_matrix = [int(round(weight * scaling_factor)) for weight in flattened_weight_matrix]
 
     return np.reshape(flattened_weight_matrix, (dimension, dimension))
