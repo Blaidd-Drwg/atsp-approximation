@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
-#include <cstdint>
 #include <lemon/full_graph.h>
 #include <lemon/min_cost_arborescence.h>
 
 using namespace lemon;
+typedef unsigned long long ull;
 
 int main(int argc, char *argv[]) {
     if (argc < 4) {
@@ -16,33 +16,33 @@ int main(int argc, char *argv[]) {
     input.open(argv[2]);
 
     std::istringstream startNodeParser(argv[1]);
-    uint64_t startNode;
+    ull startNode;
     startNodeParser >> startNode;
-    uint64_t dim;
+    ull dim;
     input >> dim;
 
     FullDigraph g(dim);
-    FullDigraph::ArcMap<uint64_t> costs(g);
+    FullDigraph::ArcMap<ull> costs(g);
 
-    uint64_t weight;
-    for (uint64_t i = 0; i < dim; i++) {
+    ull weight;
+    for (ull i = 0; i < dim; i++) {
         FullDigraph::Node u = g(i);
-        for (uint64_t j = 0; j < dim; j++) {
+        for (ull j = 0; j < dim; j++) {
             FullDigraph::Node v = g(j);
             input >> weight;
             costs[g.arc(u, v)] = weight;
         }
     }
 
-    MinCostArborescence<FullDigraph, FullDigraph::ArcMap<uint64_t> > algo(g, costs);
+    MinCostArborescence<FullDigraph, FullDigraph::ArcMap<ull> > algo(g, costs);
     algo.run(g(startNode));
 
     std::ofstream output;
     output.open(argv[3]);
 
-    for (uint64_t i = 0; i < dim; i++) {
+    for (ull i = 0; i < dim; i++) {
         FullDigraph::Node u = g(i);
-        for (uint64_t j = 0; j < dim; j++) {
+        for (ull j = 0; j < dim; j++) {
             FullDigraph::Node v = g(j);
             bool inArbo = algo.arborescence(g.arc(u, v));
             output << static_cast<int>(inArbo);
