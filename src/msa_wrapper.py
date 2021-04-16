@@ -4,6 +4,9 @@ import pathlib
 import tempfile
 import networkx as nx
 
+# msa_solver represents weights and node indices as uint64_t
+MAX_MSA_SOLVER_WEIGHT = 2**64 - 1
+MAX_MSA_SOLVER_NODE_INDEX = 2**64 - 1
 
 def calc_msa(g, start_node):
     GRAPH_NAME = 'tmp.graph'
@@ -11,6 +14,11 @@ def calc_msa(g, start_node):
 
     if not g.nodes:
         return nx.DiGraph()
+
+    if len(g) > MAX_MSA_SOLVER_NODE_INDEX:
+        raise ValueError('Too many nodes, minimum spanning arborescence cannot be computed.')
+    if any(data['weight'] > MAX_MSA_SOLVER_WEIGHT for u, v, data in g.edges(data=True)):
+        raise ValueError('Edge weight too big for msa_solver, minimum spanning arborescence cannot be computed.')
 
     with tempfile.TemporaryDirectory() as tmpdir:
         graph_file = os.path.join(tmpdir, GRAPH_NAME)

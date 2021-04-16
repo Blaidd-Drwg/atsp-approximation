@@ -12,7 +12,7 @@ def jonker_volgenant(g):
     big = len(g) * max_weight + 1  # a weight so big that not using a 0 weight edge is never worth it
     huge = len(g) * (big + max_weight) + 1  # a weight so huge that it's never used in a tour
     if huge > 1 << 30:
-        raise Exception('Edge weight too big for Concorde, Jonker-Volgenant cannot be applied.')
+        raise ValueError('Edge weight too big for Concorde, Jonker-Volgenant cannot be applied.')
 
     n = len(g)
     g_sym = nx.Graph()
