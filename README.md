@@ -32,7 +32,7 @@ $ python3 src/main.py
 ```
 The script supports the following arguments:
 ```
-usage: [-h] [--tour] (-t | -c) [-b BETA | --multibeta] graph
+usage: [-h] (-t | -c) [--only-kernel-size | --tour] [-b BETA | --multibeta] graph
 
 positional arguments:
   graph                 A file describing a graph. Multiple formats are supported, identified by the
@@ -44,9 +44,10 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --tour                Output the computed tour as a space-separated node list
   -t, --treedoubling    Use the generalized tree doubling algorithm
   -c, --christofides    Use the generalized Christofides algorithm
+  --only-kernel-size    Only output the instance's kernel size without computing a tour
+  --tour                Output the computed tour as a space-separated node list
   -b BETA, --beta BETA  Asymmetry factor above which edges are treated as asymmetric (default: 1).
                         Choosing beta = 0 will compute an exact solution.
   --multibeta           Execute the script multiple times with different values for beta.

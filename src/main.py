@@ -20,11 +20,18 @@ def random_tour(g):
     return {'cost': tour_cost(tour, g), 'tour': tour}
 
 
-def multibeta(matrix, algo, output_tour):
+def multibeta(matrix, algo, compute_tour, output_tour):
     g = to_graph(matrix)
     # plot(g)
 
-    print(format_output({**concorde_asym(g), 'kernel_size': len(g)}, 0, output_tour))  # exact solution
+    if compute_tour:
+        exact_algo = concorde_asym
+    else:
+        # skip the (possibly expensive) exact computation by returning a dummy tour
+        exact_algo = lambda graph: {'cost': 0, 'tour': list(graph)}
+
+    #  run(g, algo, 0, compute_tour, output_tour)
+    print(format_output({**exact_algo(g), 'kernel_size': len(g)}, 0, compute_tour, output_tour))  # exact solution
 
     facs = sorted(asymmetry_factors(matrix), reverse=True)
     asym_ratio = 1  # start using all asymmetric edges
@@ -35,14 +42,7 @@ def multibeta(matrix, algo, output_tour):
         else:
             beta = facs[int(beta_index)]
 
-        if algo == 'treedoubling':
-            solution = g_treedoubling(g, exact_algo=concorde_asym, beta=beta)
-        elif algo == 'christofides':
-            solution = g_christofides(g, exact_algo=concorde_asym, vc_algo=vertex_cover, beta=beta)
-        else:
-            raise ValueError(f'invalid algo: {algo}')
-
-        print(format_output(solution, beta, output_tour))
+        run(g, algo, beta, compute_tour, output_tour)
 
         if round(asym_ratio * len(facs)) > 0:
             asym_ratio /= 2
@@ -50,15 +50,20 @@ def multibeta(matrix, algo, output_tour):
             break
 
 
-def run(matrix, algo, beta, output_tour):
-    g = to_graph(matrix)
+def run(g, algo, beta, compute_tour, output_tour):
+    if compute_tour:
+        exact_algo = concorde_asym
+    else:
+        # skip the expensive exact computation by returning a dummy tour
+        exact_algo = lambda graph: {'cost': 0, 'tour': list(graph)}
+
     if algo == 'treedoubling':
-        solution = g_treedoubling(g, exact_algo=concorde_asym, beta=beta)
+        solution = g_treedoubling(g, exact_algo=exact_algo, beta=beta)
     elif algo == 'christofides':
-        solution = g_christofides(g, exact_algo=concorde_asym, vc_algo=vertex_cover, beta=beta)
+        solution = g_christofides(g, exact_algo=exact_algo, vc_algo=vertex_cover, beta=beta)
     else:
         raise ValueError(f'invalid algo: {algo}')
-    print(format_output(solution, beta, output_tour))
+    print(format_output(solution, beta, compute_tour, output_tour))
 
 
 def compare_algos(matrix):
@@ -70,8 +75,10 @@ def compare_algos(matrix):
     print(f'random: {random_tour(g)}')
 
 
-def format_output(solution, beta, output_tour):
-    output = [str(n) for n in [beta, solution['kernel_size'], solution['cost']]]
+def format_output(solution, beta, compute_tour, output_tour):
+    output = [str(n) for n in [beta, solution['kernel_size']]]
+    if compute_tour:
+        output.append(str(solution['cost']))
     if output_tour:
         output.append(' '.join(str(n) for n in solution['tour']))
     return ', '.join(output)
@@ -87,8 +94,6 @@ def main():
                            '  .csv: weight matrices in CSV format\n'
                            '  .tsv: weight matrices in TSV format\n'
                            "  .txt: the graph's dimension followed by whitespace-separated edge weights.")
-    argparser.add_argument('--tour', action='store_true', dest='output_tour',
-                           help='Output the computed tour as a space-separated node list')
 
     algo_group = argparser.add_mutually_exclusive_group(required=True)
     algo_group.add_argument('-t', '--treedoubling', dest='algo', action='store_const', const='treedoubling',
@@ -96,7 +101,13 @@ def main():
     algo_group.add_argument('-c', '--christofides', dest='algo', action='store_const', const='christofides',
                             help='Use the generalized Christofides algorithm')
 
-    beta_group = argparser.add_mutually_exclusive_group()
+    result_group = argparser.add_mutually_exclusive_group(required=False)
+    result_group.add_argument('--only-kernel-size', action='store_false', dest='compute_tour',
+                           help="Only output the instance's kernel size without computing a tour")
+    result_group.add_argument('--tour', action='store_true', dest='output_tour',
+                           help='Output the computed tour as a space-separated node list')
+
+    beta_group = argparser.add_mutually_exclusive_group(required=False)
     beta_group.add_argument('-b', '--beta', default=1, type=float,
                             help='Asymmetry factor above which edges are treated as asymmetric (default: %(default)d).\n'
                             'Choosing beta = 0 will compute an exact solution.')
@@ -121,16 +132,20 @@ def main():
     matrix = metricize_cost_matrix(matrix)
     # check_symmetry(matrix)
     # compare_algos(matrix)
+    g = to_graph(matrix)
 
-    fields = ['beta', 'kernel_size', 'tour_cost']
+    fields = ['beta', 'kernel_size']
+    if args.compute_tour:
+        fields.append('tour_cost')
     if args.output_tour:
         fields.append('tour')
     print(', '.join(fields))
 
     if args.multibeta:
-        multibeta(matrix, args.algo, args.output_tour)
+        multibeta(matrix, args.algo, args.compute_tour, args.output_tour)
     else:
-        run(matrix, args.algo, args.beta, args.output_tour)
+        g = to_graph(matrix)
+        run(g, args.algo, args.beta, args.compute_tour, args.output_tour)
 
 
 if __name__ == '__main__':

@@ -21,6 +21,7 @@ def find_aymm_edges(g, beta):
     return asymm_edges
 
 
+# exact_algo must be a callable with signature: DiGraph -> {'cost': int, 'tour': [int]}
 def g_christofides(g, exact_algo=held_karp, vc_algo=vertex_cover, beta=1.0):
     random.seed(0)
     asymm_edges = find_aymm_edges(g, beta)

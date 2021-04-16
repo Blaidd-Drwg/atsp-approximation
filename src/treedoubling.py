@@ -10,6 +10,7 @@ from util import tour_cost, metric_shortcut
 from msa_wrapper import calc_msa
 
 
+# exact_algo must be a callable with signature: DiGraph -> {'cost': int, 'tour': [int]}
 def g_treedoubling(g, exact_algo=held_karp, beta=1.0):
     # 1. Dividing the graph into components
     best_msa = None
