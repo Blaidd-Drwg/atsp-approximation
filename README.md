@@ -49,7 +49,8 @@ optional arguments:
   --only-kernel-size    Only output the instance's kernel size without computing a tour
   --tour                Output the computed tour as a space-separated node list
   -b BETA, --beta BETA  Asymmetry factor above which edges are treated as asymmetric (default: 1).
-                        Choosing beta = 0 will compute an exact solution.
+                        Choosing beta = 0 will compute an exact solution. You may also pass a
+                        comma-separated list of values to execute the algorithm multiple times.
   --multibeta           Execute the script multiple times with different values for beta.
                         First, compute an exact solution as a reference point. After that, start
                         by treating every asymmetric edge as asymmetric (beta = 1), then halve

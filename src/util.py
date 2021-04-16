@@ -38,3 +38,8 @@ def rotate(l, n):
 
 def err_print(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
+
+
+def float_list(string):
+    elements = string.split(',')
+    return [float(element) for element in elements]
