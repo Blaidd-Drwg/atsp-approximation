@@ -31,7 +31,7 @@ def multibeta(matrix, algo, compute_tour, output_tour):
         exact_algo = lambda graph: {'cost': 0, 'tour': list(graph)}
 
     #  run(g, algo, 0, compute_tour, output_tour)
-    print(format_output({**exact_algo(g), 'kernel_size': len(g)}, 0, compute_tour, output_tour))  # exact solution
+    print(format_output({**exact_algo(g), 'kernel_size': len(g)}, len(g), 0, compute_tour, output_tour))  # exact solution
 
     facs = sorted(asymmetry_factors(matrix), reverse=True)
     asym_ratio = 1  # start using all asymmetric edges
@@ -63,7 +63,7 @@ def run(g, algo, beta, compute_tour, output_tour):
         solution = g_christofides(g, exact_algo=exact_algo, vc_algo=vertex_cover, beta=beta)
     else:
         raise ValueError(f'invalid algo: {algo}')
-    print(format_output(solution, beta, compute_tour, output_tour))
+    print(format_output(solution, len(g), beta, compute_tour, output_tour))
 
 
 def compare_algos(matrix):
@@ -75,8 +75,8 @@ def compare_algos(matrix):
     print(f'random: {random_tour(g)}')
 
 
-def format_output(solution, beta, compute_tour, output_tour):
-    output = [str(n) for n in [beta, solution['kernel_size']]]
+def format_output(solution, graph_size, beta, compute_tour, output_tour):
+    output = [str(n) for n in [beta, graph_size, solution['kernel_size']]]
     if compute_tour:
         output.append(str(solution['cost']))
     if output_tour:
@@ -134,7 +134,7 @@ def main():
     # compare_algos(matrix)
     g = to_graph(matrix)
 
-    fields = ['beta', 'kernel_size']
+    fields = ['beta', 'graph_size', 'kernel_size']
     if args.compute_tour:
         fields.append('tour_cost')
     if args.output_tour:
