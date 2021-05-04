@@ -1,25 +1,87 @@
-library(ggplot2)
-library(egg)
+source('helper.R')
 
-tbl_c <- read.csv("../../old_output/ftv170.atsp.c")
-tbl_c$algo <- "Generalized Christofides algorithm"
-tbl_t <- read.csv("../../old_output/ftv170.atsp.t")
-tbl_t$algo <- "Generalized tree-doubling algorithm"
+tbl <- read.csv("./old_output.csv")
 
-tbl <- rbind(tbl_c, tbl_t)
-
-tbl$opt <- ave(tbl$tour_cost, tbl$algo, FUN=min)
+tbl$opt <- ave(tbl$tour_cost, tbl$graph, FUN = min)
 tbl$aprox <- tbl$tour_cost / tbl$opt
 
-p = ggplot(tbl,
-       aes(
-         x = aprox,
-         y = kernel_size,
-         color = algo)
-) +
-  geom_point() +
-  xlab("approximation factor")+
-  ylab("kernel size")
+instances <-
+  c(
+    'br17',
+    'ft53',
+    'ft70',
+    'ftv170',
+    'ftv33',
+    'ftv35',
+    'ftv38',
+    'ftv44',
+    'ftv47',
+    'ftv55',
+    'ftv64',
+    'ftv70',
+    'kro124p',
+    'p43',
+    'rbg323',
+    'rbg358',
+    'rbg403',
+    'rbg443',
+    'ry48p'
+  )
 
-ggsave("output.pdf/ftp170.atsp.pdf", plot = p,
-       width = 8, height = 5)
+tbl1 <- tbl[tbl$graph %in% instances[1:8],]
+
+p1 = ggplot(tbl1,
+           aes(x = aprox,
+               y = kernel_size,
+               color = algo)) +
+  facet_wrap(~graph, ncol=2, scales = 'free') +
+  scale_color_discrete(name="Algorithm") +
+  geom_point() +
+  xlab("approximation factor") +
+  ylab("kernel size")
+p1
+ggsave(
+  "output.pdf/old_output1.pdf",
+  plot = p1,
+  width = 8,
+  height = 10
+)
+
+tbl2 <- tbl[tbl$graph %in% instances[9:16],]
+
+p2 = ggplot(tbl2,
+            aes(x = aprox,
+                y = kernel_size,
+                color = algo)) +
+  facet_wrap(~graph, ncol=2, scales = 'free') +
+  scale_color_discrete(name="Algorithm") +
+  geom_point() +
+  xlab("approximation factor") +
+  ylab("kernel size")
+p2
+ggsave(
+  "output.pdf/old_output2.pdf",
+  plot = p2,
+  width = 8,
+  height = 10
+)
+
+tbl3 <- tbl[tbl$graph %in% instances[17:19],]
+
+p3 = ggplot(tbl3,
+            aes(x = aprox,
+                y = kernel_size,
+                color = algo)) +
+  facet_wrap(~graph, ncol=2, scales = 'free') +
+  scale_color_discrete(name="Algorithm") +
+  geom_point() +
+  xlab("approximation factor") +
+  ylab("kernel size")
+p3
+ggsave(
+  "output.pdf/old_output3.pdf",
+  plot = p3,
+  width = 8,
+  height = 5
+)
+
